@@ -1,0 +1,162 @@
+---
+- name: Download AAP2 Package 
+  hosts: localhost
+  vars_prompt:
+    - name: offline_token
+      prompt: What is your Offline Token? (Check README)
+      unsafe: yes
+      private: yes      
+  vars:
+    checksum:
+      aap2: 93402e7f622473c754b450a5af3c2f9dea51906be441794187d1445daf3b90ef
+        
+  tasks:
+    - name: Retrieve an access token
+      uri:
+        url: https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token
+        body:
+          grant_type: refresh_token
+          client_id: rhsm-api
+          refresh_token: "{{ offline_token }}"
+        body_format: form-urlencoded
+        method: POST
+      register: response
+
+    - name: Workaround to non-working uri module on success
+      shell: 'curl -H "Authorization: Bearer {{ response.json.access_token }}" https://api.access.redhat.com/management/v1/images/{{ checksum.aap2 }}/download'
+      register: imageurl
+
+# HANGING FOREVER
+#    - name: Retrieve image download URL
+#      ansible.builtin.uri:
+#        url: https://api.access.redhat.com/management/v1/images/{{ checksum.rhel8 }}/download
+#        return_content: true
+#        follow_redirects: all
+#        headers:
+#          Content-Type: application/json
+#          Authorization: 'Bearer {{ response.json.access_token }}'
+#          User-Agent: curl/7.61.1
+#      register: imageurl
+    - name: Set result as facts
+      ansible.builtin.set_fact:
+        installer_url: "{{ (imageurl.stdout | from_json).body.href }}"
+        installer_package: "{{(imageurl.stdout | from_json).body.filename }}"
+
+    - name: Retrieve Installer
+      get_url:
+        url: "{{ installer_url }}"
+        dest: "{{ playbook_dir }}/{{ installer_package }}"
+
+- name: Configure RHSM on nodes and download installer
+  hosts: controller,hub
+  become: true
+  vars_prompt:
+    - name: rhsm_user
+      prompt: What is your RHSM Username (RHNID)?
+      unsafe: yes
+      private: no
+
+    - name: rhsm_password
+      prompt: What is your RHSM Password?
+      unsafe: yes
+      private: yes
+
+    - name: rhsm_pool_id
+      prompt: What is the pool-id for your subscription (check README)?
+      unsafe: yes
+      private: no
+
+  tasks:
+    - name: Register system with Red Hat Subscription Manager
+      community.general.redhat_subscription:
+        state: present
+        username: "{{ rhsm_user }}"
+        password: "{{ rhsm_password }}"
+        pool_ids: "{{ rhsm_pool_id }}"
+
+    - name: Enable required RHSM repositories
+      community.general.rhsm_repository:
+        name: 
+          - ansible-automation-platform-2.1-for-rhel-8-x86_64-rpms
+        state: enabled
+
+    - name: Ensure all packages are updated
+      yum:
+        name: '*'
+        state: latest
+  tags: setup
+
+- name: AAP Controller configuration playbook
+  hosts: controller
+  become: true
+  vars_prompt:
+
+  tasks:
+    - name: Create destination directory
+      file:
+        path: /root/aap2
+        state: directory
+
+    - name: Extract AAP2 setup content
+      ansible.builtin.unarchive:
+        src: "{{ hostvars['localhost']['installer_package'] }}"
+        dest: /root/aap2
+
+    - name: Retrieve AAP2 folder name
+      find:
+        paths: /root/aap2
+        file_type: directory
+      register: untar
+
+    - name: Copy inventory for controller
+      copy:
+        src: inventory-controller
+        dest: "{{ untar.files[0].path }}/inventory"
+
+    - name: Install AAP2
+      ansible.builtin.shell: 
+        cmd: ./setup.sh
+        chdir: "{{ untar.files[0].path }}"
+
+    - name: Reboot server
+      reboot: 
+
+  tags: controller
+
+- name: AAP Automation Hub configuration playbook
+  hosts: hub
+  become: true
+  tasks:
+    - name: Create destination directory
+      file:
+        path: /root/aap2
+        state: directory
+
+    - name: Extract AAP2 setup content
+      ansible.builtin.unarchive:
+        src: "{{ hostvars['localhost']['installer_package'] }}"
+        dest: /root/aap2
+
+    - name: Get aap2 folder name
+      find:
+        paths: /root/aap2
+        file_type: directory
+      register: untar
+
+    - name: Print var
+      debug:
+        var: untar.files[0].path
+
+    - name: Copy inventory for controller
+      copy:
+        src: inventory-hub
+        dest: "{{ untar.files[0].path }}/inventory"
+
+    - name: Install Automation Hub
+      ansible.builtin.shell:
+        cmd: ./setup.sh
+        chdir: "{{ untar.files[0].path }}"
+
+    - name: Reboot server
+      reboot:
+  tags: hub
