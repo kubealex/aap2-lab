@@ -8,7 +8,7 @@
       private: yes      
   vars:
     checksum:
-      aap2: 93402e7f622473c754b450a5af3c2f9dea51906be441794187d1445daf3b90ef
+      aap2: 835161225aec0bc18421978985870a7d3a0d54667dc659b68a358ba32256a8fb
         
   tasks:
     - name: Retrieve an access token
@@ -78,7 +78,7 @@
     - name: Enable required RHSM repositories
       community.general.rhsm_repository:
         name: 
-          - ansible-automation-platform-2.1-for-rhel-8-x86_64-rpms
+          - ansible-automation-platform-2.2-for-rhel-8-x86_64-rpms
         state: enabled
       become: true
 
