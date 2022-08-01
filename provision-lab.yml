@@ -177,7 +177,7 @@
     - name: Waiting for installation to end, it can take time!
       wait_for_connection:
         timeout: 1800
-        delay: 0
+        sleep: 30
 
     - ping:
 
