@@ -43,11 +43,11 @@ variable disk_size {
 variable os_image {
   type        = string
   description = "URL/path of the image to be used for the VM provisioning"
-  default     = "rhel8.iso"
+  default     = "rhel.iso"
 }
 
 variable kickstart_image {
   type        = string
   description = "Path for the kickstart image"
-  default     = "rhel8-controller-oemdrv.img"
+  default     = "controller-oemdrv.img"
 }

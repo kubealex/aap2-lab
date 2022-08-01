@@ -1,0 +1,18 @@
+packages:
+  - python3-lxml
+  - python3-netaddr
+  - python3-libvirt
+  - python3-pip
+  - libvirt-devel
+  - libvirt
+  - qemu-kvm
+  - virt-install
+  - virt-manager
+modules:
+  - module: 01_controller_instance
+    instance: controller
+    hostname: controller
+  - module: 02_hub_instance
+    instance: automation-hub
+    hostname: el8-server
+domain: aapdemo.labs

@@ -25,7 +25,7 @@ variable cpu {
 variable kickstart_image {
   type        = string
   description = "Path for the kickstart image for RHEL8"
-  default     = "rhel8-hub-oemdrv.img"
+  default     = "automation-hub-oemdrv.img"
 }
 
 variable libvirt_network {
@@ -49,5 +49,5 @@ variable disk_size {
 variable os_image {
   type        = string
   description = "URL/path of the image to be used for the VM provisioning"
-  default     = "rhel8.iso"
+  default     = "rhel.iso"
 }
