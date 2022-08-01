@@ -7,8 +7,7 @@
       private: no
   vars:
     checksum:
-      rhel9: a387f3230acf87ee38707ee90d3c88f44d7bf579e6325492f562f0f1f9449e89
-  become: true  
+      rhel9: a387f3230acf87ee38707ee90d3c88f44d7bf579e6325492f562f0f1f9449e89  
   tasks:
     - block:
       - name: Retrieve an access token
@@ -49,6 +48,7 @@
 
 - name: This play provisions VMs for AAP2 demos
   hosts: localhost
+  become: true
   vars:
     network_cidr: 192.168.216.0/24
   vars_files:
