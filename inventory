@@ -1,7 +1,7 @@
 localhost ansible_connection=local
 
 [controller]
-controller.aapdemo.labs ansible_user=sysadmin ansible_ssh_pass=redhat
+controller.aapdemo.labs ansible_user=sysadmin ansible_ssh_pass=redhat ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 
 [hub]
-hub.aapdemo.labs ansible_user=sysadmin ansible_ssh_pass=redhat
+hub.aapdemo.labs ansible_user=sysadmin ansible_ssh_pass=redhat ansible_ssh_common_args='-o StrictHostKeyChecking=no'

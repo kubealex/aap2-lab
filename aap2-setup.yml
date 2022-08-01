@@ -22,7 +22,7 @@
         method: POST
       register: response
 
-    - name: Retrieve image download URL
+    - name: Retrieve package download URL
       ansible.builtin.uri:
         url: https://api.access.redhat.com/management/v1/images/{{ checksum.aap2 }}/download
         follow_redirects: no
@@ -39,13 +39,14 @@
         installer_url: "{{ imageurl.json.body.href }}"
         installer_package: "{{ imageurl.json.body.filename }}"
     
-    - name: Retrieve RHEL ISO
+    - name: Retrieve AAP2 package ISO
       ansible.builtin.get_url:
         url: "{{ installer_url }}"
         dest: "{{ playbook_dir }}/{{ installer_package }}"
 
 - name: Configure RHSM on nodes and download installer
   hosts: controller,hub
+  become: true
   vars_prompt:
     - name: rhsm_user
       prompt: What is your RHSM Username (RHNID)?
@@ -68,26 +69,24 @@
         state: present
         username: "{{ rhsm_user }}"
         password: "{{ rhsm_password }}"
-        pool_ids: "{{ rhsm_pool_id }}"
-      become: true
-      
+        pool_ids: "{{ rhsm_pool_id }}"      
 
     - name: Enable required RHSM repositories
       community.general.rhsm_repository:
         name: 
           - ansible-automation-platform-2.2-for-rhel-9-x86_64-rpms
         state: enabled
-      become: true
 
     - name: Ensure all packages are updated
       yum:
         name: '*'
         state: latest
-      become: true        
+
   tags: setup
 
 - name: AAP Controller configuration playbook
   hosts: controller
+  become: true
   vars_prompt:
 
   tasks:
@@ -116,11 +115,9 @@
       ansible.builtin.shell: 
         cmd: ./setup.sh
         chdir: "{{ untar.files[0].path }}"
-      become: true        
 
     - name: Reboot server
       reboot: 
-      become: true        
 
   tags: controller
 
@@ -157,10 +154,8 @@
       ansible.builtin.shell:
         cmd: ./setup.sh
         chdir: "{{ untar.files[0].path }}"
-      become: true        
 
     - name: Reboot server
       reboot:
-      become: true        
       
   tags: hub
