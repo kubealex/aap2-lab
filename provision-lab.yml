@@ -134,12 +134,12 @@
 
     - name: Add Local resolver for the domain
       ansible.builtin.copy:
-        content: server=/satellitedemo.labs/{{ network_cidr | next_nth_usable(1)}}
-        dest: /etc/NetworkManager/dnsmasq.d/satellitedemo.conf
+        content: server=/aapdemo.labs/{{ network_cidr | next_nth_usable(1)}}
+        dest: /etc/NetworkManager/dnsmasq.d/aapdemo.conf
 
     - name: Configure NetworkManager for local DNS
       ansible.builtin.blockinfile:
-        path: /etc/NetworkManager/conf.d/satellite-localdns.conf
+        path: /etc/NetworkManager/conf.d/aap-localdns.conf
         block: |
           [main]
           dns=dnsmasq
@@ -178,7 +178,7 @@
       wait_for_connection:
         timeout: 1800
         delay: 0
-        
+
     - ping:
 
     - name: Setup is ready
