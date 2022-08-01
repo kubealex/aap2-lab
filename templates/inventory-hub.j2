@@ -4,10 +4,6 @@
 {{ inventory_hostname }} ansible_connection=local
 
 [all:vars]
-registry_url='registry.redhat.io'
-registry_username='<registry username>'
-registry_password='<registry password>'
-
 automationhub_admin_password='redhat'
 
 automationhub_pg_host=''
@@ -17,3 +13,7 @@ automationhub_pg_database='automationhub'
 automationhub_pg_username='automationhub'
 automationhub_pg_password='redhat'
 automationhub_pg_sslmode='prefer'
+
+registry_url='registry.redhat.io'
+registry_username='{{ rhsm_user }}'
+registry_password='{{ rhsm_password }}'
