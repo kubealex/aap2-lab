@@ -8,11 +8,11 @@
       private: yes      
   vars:
     checksum:
-      aap2: 835161225aec0bc18421978985870a7d3a0d54667dc659b68a358ba32256a8fb
+      aap2: 414b3e84f5cdc3a10ba64e09a7c770aace88466c054520df3a12f9a5c39d7623
         
   tasks:
     - name: Retrieve an access token
-      uri:
+      ansible.builtin.uri:
         url: https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token
         body:
           grant_type: refresh_token
@@ -22,28 +22,25 @@
         method: POST
       register: response
 
-    - name: Workaround to non-working uri module on success
-      shell: 'curl -H "Authorization: Bearer {{ response.json.access_token }}" https://api.access.redhat.com/management/v1/images/{{ checksum.aap2 }}/download'
+    - name: Retrieve image download URL
+      ansible.builtin.uri:
+        url: https://api.access.redhat.com/management/v1/images/{{ checksum.aap2 }}/download
+        follow_redirects: no
+        headers:
+          Content-Type: application/json
+          Authorization: 'Bearer {{ response.json.access_token }}'
+        status_code:
+          - 307
+          - 200
       register: imageurl
 
-# HANGING FOREVER
-#    - name: Retrieve image download URL
-#      ansible.builtin.uri:
-#        url: https://api.access.redhat.com/management/v1/images/{{ checksum.rhel8 }}/download
-#        return_content: true
-#        follow_redirects: all
-#        headers:
-#          Content-Type: application/json
-#          Authorization: 'Bearer {{ response.json.access_token }}'
-#          User-Agent: curl/7.61.1
-#      register: imageurl
     - name: Set result as facts
       ansible.builtin.set_fact:
-        installer_url: "{{ (imageurl.stdout | from_json).body.href }}"
-        installer_package: "{{(imageurl.stdout | from_json).body.filename }}"
-
-    - name: Retrieve Installer
-      get_url:
+        installer_url: "{{ imageurl.json.body.href }}"
+        installer_package: "{{ imageurl.json.body.filename }}"
+    
+    - name: Retrieve RHEL ISO
+      ansible.builtin.get_url:
         url: "{{ installer_url }}"
         dest: "{{ playbook_dir }}/{{ installer_package }}"
 
