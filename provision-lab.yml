@@ -159,9 +159,8 @@
         groups:
           - "servers"        
       loop:
-        - satellite
-        - el8-server
-        - el9-server
+        - controller
+        - hub
 
     - name: Ensure to clean known_hosts
       ansible.builtin.known_hosts:
@@ -179,15 +178,7 @@
       wait_for_connection:
         timeout: 1800
         delay: 0
-
-    - name: Setup sysadmin user to use sudo
-      copy:
-        content: '%wheel	ALL=(ALL)	NOPASSWD: ALL'
-        dest: /etc/sudoers.d/wheelers
-        mode: 0400
-        owner: root
-        group: root
-
+        
     - ping:
 
     - name: Setup is ready
