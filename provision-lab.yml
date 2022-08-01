@@ -8,7 +8,7 @@
   vars:
     checksum:
       rhel9: a387f3230acf87ee38707ee90d3c88f44d7bf579e6325492f562f0f1f9449e89
-        
+  become: true  
   tasks:
     - block:
       - name: Retrieve an access token
