@@ -1,7 +1,7 @@
 lang en_US
 keyboard us
 timezone Etc/GMT --isUtc
-rootpw --plaintext "redhat"
+rootpw --plaintext redhat
 user --name=sysadmin --groups=wheel --password=redhat --plaintext
 #platform x86_64
 reboot
@@ -25,6 +25,6 @@ cp /etc/machine-info /mnt/sysimage/etc/machine-info
 echo -e 'sysadmin\tALL=(ALL)\tNOPASSWD: ALL' >> /etc/sudoers
 %end
 %packages
-@^graphical-server-environment
+@^minimal-environment
 @standard
 %end
