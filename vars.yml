@@ -14,5 +14,5 @@ modules:
     hostname: controller
   - module: 02_hub_instance
     instance: automation-hub
-    hostname: el8-server
+    hostname: hub
 domain: aapdemo.labs
