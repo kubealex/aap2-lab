@@ -108,8 +108,8 @@
       register: untar
 
     - name: Copy inventory for controller
-      copy:
-        src: inventory-controller
+      ansible.builtin.template:
+        src: inventory-controller.j2
         dest: "{{ untar.files[0].path }}/inventory"
 
     - name: Install AAP2
@@ -149,8 +149,8 @@
         var: untar.files[0].path
 
     - name: Copy inventory for controller
-      copy:
-        src: inventory-hub
+      ansible.builtin.template:
+        src: inventory-hub.j2
         dest: "{{ untar.files[0].path }}/inventory"
 
     - name: Install Automation Hub

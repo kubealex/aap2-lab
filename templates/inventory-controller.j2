@@ -1,7 +1,7 @@
 localhost ansible_connection=local
 
 [automationcontroller]
-localhost ansible_connection=local
+{{ inventory_hostname }} ansible_connection=local
 
 [database]
 

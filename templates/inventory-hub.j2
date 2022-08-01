@@ -1,7 +1,7 @@
 [automationcontroller]
 
 [automationhub]
-localhost ansible_connection=local
+{{ inventory_hostname }} ansible_connection=local
 
 [all:vars]
 registry_url='registry.redhat.io'
