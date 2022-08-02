@@ -77,7 +77,7 @@
   hosts: hub
   become: true
   vars_files:
-    - rh_vars.yml  
+    - lab_vars.yml  
   tasks:
     - name: Create destination directory
       file:
