@@ -16,7 +16,6 @@
       vars:
         rh_product_checksum: "{{ checksum.aap2 }}"
         rh_api_offline_token: "{{ offline_token }}"
-      when: offline_token is defined and offline_token != ""
 
 - name: Configure RHSM on nodes and download installer
   hosts: controller,hub
