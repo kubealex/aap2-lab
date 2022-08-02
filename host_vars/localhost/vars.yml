@@ -18,3 +18,4 @@ modules:
 domain: aapdemo.labs
 checksum:
   aap2: 414b3e84f5cdc3a10ba64e09a7c770aace88466c054520df3a12f9a5c39d7623
+  rhel9: a387f3230acf87ee38707ee90d3c88f44d7bf579e6325492f562f0f1f9449e89  

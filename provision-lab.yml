@@ -1,13 +1,5 @@
 - name: Download RHEL ISO
   hosts: localhost
-  vars_prompt:
-    - name: offline_token
-      prompt: What is your Offline Token? Leave this empty if you don't want to download ISOS (Check README)
-      unsafe: yes
-      private: no
-  vars:
-    checksum:
-      rhel9: a387f3230acf87ee38707ee90d3c88f44d7bf579e6325492f562f0f1f9449e89  
   tasks:
     - ansible.builtin.include_role:
         name: package-downloader
@@ -20,10 +12,6 @@
 - name: This play provisions VMs for AAP2 demos
   hosts: localhost
   become: true
-  vars:
-    network_cidr: 192.168.216.0/24
-  vars_files:
-    - vars.yml
   tasks:
     - name: Ensure required packages are in place
       yum: 
