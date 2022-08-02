@@ -12,7 +12,7 @@
   hosts: controller,hub
   become: true
   vars_files:
-    - rh_vars.yml
+    - lab_vars.yml  
   tasks:
     - name: Register system with Red Hat Subscription Manager
       community.general.redhat_subscription:
@@ -38,7 +38,7 @@
   hosts: controller
   become: true
   vars_files:
-    - rh_vars.yml  
+    - lab_vars.yml  
   tasks:
     - name: Create destination directory
       file:
