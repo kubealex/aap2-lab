@@ -44,10 +44,10 @@
 #          dest: "{{ playbook_dir }}/rhel.iso"
   - ansible.builtin.include_role:
       name: package-downloader
-      vars:
-        rh_product_filename: rhel.iso
-        rh_product_checksum: "{{ checksum.rhel9 }}"
-        rh_api_offline_token: "{{ offline_token }}"
+    vars:
+      rh_product_filename: rhel.iso
+      rh_product_checksum: "{{ checksum.rhel9 }}"
+      rh_api_offline_token: "{{ offline_token }}"
     when: offline_token is defined and offline_token != ""
     
 - name: This play provisions VMs for AAP2 demos
