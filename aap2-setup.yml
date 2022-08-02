@@ -1,15 +1,6 @@
 ---
 - name: Download AAP2 Package 
-  hosts: localhost
-  vars_prompt:
-    - name: offline_token
-      prompt: What is your Offline Token? (Check README)
-      unsafe: yes
-      private: yes      
-  vars:
-    checksum:
-      aap2: 414b3e84f5cdc3a10ba64e09a7c770aace88466c054520df3a12f9a5c39d7623
-        
+  hosts: localhost  
   tasks:
     - ansible.builtin.include_role:
         name: package-downloader
@@ -20,22 +11,8 @@
 - name: Configure RHSM on nodes and download installer
   hosts: controller,hub
   become: true
-  vars_prompt:
-    - name: rhsm_user
-      prompt: What is your RHSM Username (RHNID)?
-      unsafe: yes
-      private: no
-
-    - name: rhsm_password
-      prompt: What is your RHSM Password?
-      unsafe: yes
-      private: yes
-
-    - name: rhsm_pool_id
-      prompt: What is the pool-id for your subscription (check README)?
-      unsafe: yes
-      private: no
-
+  vars_files:
+    - rh_vars.yml
   tasks:
     - name: Register system with Red Hat Subscription Manager
       community.general.redhat_subscription:
@@ -60,8 +37,8 @@
 - name: AAP Controller configuration playbook
   hosts: controller
   become: true
-  vars_prompt:
-
+  vars_files:
+    - rh_vars.yml  
   tasks:
     - name: Create destination directory
       file:
@@ -97,6 +74,8 @@
 - name: AAP Automation Hub configuration playbook
   hosts: hub
   become: true
+  vars_files:
+    - rh_vars.yml  
   tasks:
     - name: Create destination directory
       file:

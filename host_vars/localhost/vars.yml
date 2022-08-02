@@ -16,3 +16,5 @@ modules:
     instance: automation-hub
     hostname: hub
 domain: aapdemo.labs
+checksum:
+  aap2: 414b3e84f5cdc3a10ba64e09a7c770aace88466c054520df3a12f9a5c39d7623
