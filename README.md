@@ -25,7 +25,7 @@ You need to follow the instructions in [Ansible Website](https://docs.ansible.co
 
 ## Needed variables
 
-In order to work, the playbooks need some basic variables:
+In order to work, the playbooks need some basic variables in the **lab_vars.yml** file:
 
 | Variable | Value | Description | 
 |--|--|--|
