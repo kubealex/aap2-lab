@@ -11,38 +11,12 @@
       aap2: 414b3e84f5cdc3a10ba64e09a7c770aace88466c054520df3a12f9a5c39d7623
         
   tasks:
-    - name: Retrieve an access token
-      ansible.builtin.uri:
-        url: https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token
-        body:
-          grant_type: refresh_token
-          client_id: rhsm-api
-          refresh_token: "{{ offline_token }}"
-        body_format: form-urlencoded
-        method: POST
-      register: response
-
-    - name: Retrieve package download URL
-      ansible.builtin.uri:
-        url: https://api.access.redhat.com/management/v1/images/{{ checksum.aap2 }}/download
-        follow_redirects: no
-        headers:
-          Content-Type: application/json
-          Authorization: 'Bearer {{ response.json.access_token }}'
-        status_code:
-          - 307
-          - 200
-      register: imageurl
-
-    - name: Set result as facts
-      ansible.builtin.set_fact:
-        installer_url: "{{ imageurl.json.body.href }}"
-        installer_package: "{{ imageurl.json.body.filename }}"
-    
-    - name: Retrieve AAP2 package ISO
-      ansible.builtin.get_url:
-        url: "{{ installer_url }}"
-        dest: "{{ playbook_dir }}/{{ installer_package }}"
+    - ansible.builtin.include_role:
+        name: package-downloader
+      vars:
+        rh_product_checksum: "{{ checksum.aap2 }}"
+        rh_api_offline_token: "{{ offline_token }}"
+      when: offline_token is defined and offline_token != ""
 
 - name: Configure RHSM on nodes and download installer
   hosts: controller,hub
@@ -97,7 +71,7 @@
 
     - name: Extract AAP2 setup content
       ansible.builtin.unarchive:
-        src: "{{ hostvars['localhost']['installer_package'] }}"
+        src: "{{ hostvars['localhost']['product_filename'] }}"
         dest: ~/aap2
 
     - name: Retrieve AAP2 folder name
@@ -132,7 +106,7 @@
 
     - name: Extract AAP2 setup content
       ansible.builtin.unarchive:
-        src: "{{ hostvars['localhost']['installer_package'] }}"
+        src: "{{ hostvars['localhost']['product_filename'] }}"
         dest: ~/aap2
 
     - name: Get aap2 folder name
