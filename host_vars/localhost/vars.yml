@@ -1,13 +1,3 @@
-packages:
-  - python3-lxml
-  - python3-netaddr
-  - python3-libvirt
-  - python3-pip
-  - libvirt-devel
-  - libvirt
-  - qemu-kvm
-  - virt-install
-  - virt-manager
 modules:
   - module: 01_controller_instance
     instance: controller
