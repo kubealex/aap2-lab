@@ -1,10 +1,11 @@
 ---
-- name: Download AAP2 Package 
+- name: Download AAP2 Package
   hosts: localhost
   vars_files:
     - lab_vars.yml
   tasks:
-    - ansible.builtin.include_role:
+    - name: Include downloader role
+      ansible.builtin.include_role:
         name: package-downloader
       vars:
         rh_product_checksum: "{{ checksum.aap2 }}"
@@ -14,25 +15,25 @@
   hosts: controller,hub
   become: true
   vars_files:
-    - lab_vars.yml  
+    - lab_vars.yml
   tasks:
     - name: Register system with Red Hat Subscription Manager
       community.general.redhat_subscription:
         state: present
         username: "{{ rhsm_user }}"
         password: "{{ rhsm_password }}"
-        pool_ids: "{{ rhsm_pool_id }}"      
+        pool_ids: "{{ rhsm_pool_id }}"
 
     - name: Enable required RHSM repositories
       community.general.rhsm_repository:
-        name: 
+        name:
           - ansible-automation-platform-2.2-for-rhel-9-x86_64-rpms
         state: enabled
 
     - name: Ensure all packages are updated
-      yum:
+      ansible.builtin.dnf:
         name: '*'
-        state: latest
+        state: latest # noqa package-latest
 
   tags: setup
 
@@ -40,12 +41,13 @@
   hosts: controller
   become: true
   vars_files:
-    - lab_vars.yml  
+    - lab_vars.yml
   tasks:
     - name: Create destination directory
-      file:
+      ansible.builtin.file:
         path: ~/aap2
         state: directory
+        mode: 0755
 
     - name: Extract AAP2 setup content
       ansible.builtin.unarchive:
@@ -53,7 +55,7 @@
         dest: ~/aap2
 
     - name: Retrieve AAP2 folder name
-      find:
+      ansible.builtin.find:
         paths: ~/aap2
         file_type: directory
       register: untar
@@ -62,14 +64,15 @@
       ansible.builtin.template:
         src: inventory-controller.j2
         dest: "{{ untar.files[0].path }}/inventory"
+        mode: 0755
 
     - name: Install AAP2
-      ansible.builtin.shell: 
+      ansible.builtin.shell:
         cmd: ./setup.sh
         chdir: "{{ untar.files[0].path }}"
 
     - name: Reboot server
-      reboot: 
+      ansible.builtin.reboot:
 
   tags: controller
 
@@ -77,12 +80,13 @@
   hosts: hub
   become: true
   vars_files:
-    - lab_vars.yml  
+    - lab_vars.yml
   tasks:
     - name: Create destination directory
-      file:
+      ansible.builtin.file:
         path: ~/aap2
         state: directory
+        mode: 0755
 
     - name: Extract AAP2 setup content
       ansible.builtin.unarchive:
@@ -90,19 +94,16 @@
         dest: ~/aap2
 
     - name: Get aap2 folder name
-      find:
+      ansible.builtin.find:
         paths: ~/aap2
         file_type: directory
       register: untar
-
-    - name: Print var
-      debug:
-        var: untar.files[0].path
 
     - name: Copy inventory for controller
       ansible.builtin.template:
         src: inventory-hub.j2
         dest: "{{ untar.files[0].path }}/inventory"
+        mode: 0755
 
     - name: Install Automation Hub
       ansible.builtin.shell:
@@ -110,6 +111,6 @@
         chdir: "{{ untar.files[0].path }}"
 
     - name: Reboot server
-      reboot:
-      
+      ansible.builtin.reboot:
+
   tags: hub

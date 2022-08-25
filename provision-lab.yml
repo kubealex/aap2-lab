@@ -3,32 +3,34 @@
   vars_files:
     - lab_vars.yml
   tasks:
-    - ansible.builtin.include_role:
+    - name: Include package downloader role
+      ansible.builtin.include_role:
         name: package-downloader
       vars:
         rh_product_filename: rhel.iso
         rh_product_checksum: "{{ checksum.rhel9 }}"
         rh_api_offline_token: "{{ offline_token }}"
       when: offline_token is defined and offline_token != ""
-    
+
 - name: This play provisions VMs for AAP2 demos
   hosts: localhost
   become: true
   vars_files:
-    - lab_vars.yml  
+    - lab_vars.yml
   tasks:
     - name: Ensure required packages are in place
-      yum: 
+      ansible.builtin.dnf:
         name: "{{ packages }}"
+        state: present
 
     - name: Ensure libvirtd is running
-      ansible.builtin.service: 
+      ansible.builtin.service:
         name: libvirtd
         state: started
         enabled: true
 
     - name: Ensure libvirt can use root as user
-      replace:
+      ansible.builtin.replace:
         path: /etc/libvirt/qemu.conf
         regexp: "{{ item.regexp }}"
         replace: "{{ item.line }}"
@@ -39,10 +41,10 @@
           line: 'group = "root"'
 
     - name: Restart libvirtd service
-      ansible.builtin.service: 
+      ansible.builtin.service:
         name: libvirtd
         state: restarted
-   
+
     - name: Create required folders
       ansible.builtin.file:
         state: directory
@@ -56,21 +58,22 @@
         dest: "{{ playbook_dir }}/terraform/modules/{{ item.module }}/{{ item.instance }}.iso"
         state: link
       loop: "{{ modules }}"
-          
-    - name: Create a 1Mib file to store kickstart 
+
+    - name: Create a 1Mib file to store kickstart
       community.general.filesize:
         path: "{{ playbook_dir }}/terraform/modules/{{ item.module }}/{{ item.instance }}-oemdrv.img"
         size: 1MiB
       loop: "{{ modules }}"
-                         
+
     - name: Generate kickstart from template
       ansible.builtin.template:
         src: ks.cfg.j2
         dest: "{{ playbook_dir }}/terraform/kickstart/{{ item.instance }}/ks.cfg"
+        mode: 0755
       loop: "{{ modules }}"
       vars:
         hostname: "{{ item.hostname }}"
-          
+
     - name: Rebuild Kickstart config
       community.general.filesystem:
         fstype: ext2
@@ -91,14 +94,16 @@
       ansible.builtin.file:
         path: /etc/NetworkManager/{{ item }}
         state: directory
-      loop: 
+        mode: 0755
+      loop:
         - dnsmasq.d
-        - conf.d      
+        - conf.d
 
     - name: Add Local resolver for the domain
       ansible.builtin.copy:
-        content: server=/aapdemo.labs/{{ network_cidr | next_nth_usable(1)}}
+        content: server=/aapdemo.labs/{{ network_cidr | next_nth_usable(1) }}
         dest: /etc/NetworkManager/dnsmasq.d/aapdemo.conf
+        mode: 0755
 
     - name: Configure NetworkManager for local DNS
       ansible.builtin.blockinfile:
@@ -107,6 +112,7 @@
           [main]
           dns=dnsmasq
         create: true
+        mode: 0755
 
     - name: Restart NetworkManager to reload config
       ansible.builtin.service:
@@ -125,16 +131,16 @@
 
 - name: Check connection to servers
   hosts: controller,hub
-  gather_facts: no
+  gather_facts: false
   tasks:
     - name: Waiting for installation to end, it can take time!
-      wait_for_connection:
+      ansible.builtin.wait_for_connection:
         timeout: 1800
-        sleep: 30
+        sleep: 120
 
-    - ping:
+    - name: Ping host to check status
+      ansible.builtin.ping:
 
     - name: Setup is ready
-      debug:
+      ansible.builtin.debug:
         msg: "Setup completed, now you can proceed with post install steps"
-
