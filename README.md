@@ -27,19 +27,20 @@ You need to follow the instructions in [Ansible Website](https://docs.ansible.co
 
 In order to work, the playbooks need some basic variables in the **lab_vars.yml** file:
 
-| Variable | Value | Description | 
+| Variable | Value | Description |
 |--|--|--|
 | **network_cidr** | Defaults to 192.168.216.0/24 | The subnet that is assigned to libvirt network |
 | **offline_token** | No default | [Offline Token](https://access.redhat.com/management/api) for images/packages download from Red Hat Portal |
 | **rhsm_user** | No default | The Red Hat Account username |
 | **rhsm_password** | No default | The Red Hat Account username |
 | **rhsm_pool_id** | No default | The pool ID of the subscription covering the product [in subscription manager](https://access.redhat.com/management/subscriptions/) |
-
+| **setup_controller** | Defaults to *true* | Boolean to enable/disable the setup of Automation Controller |
+| **setup_hub** | Defaults to *true* | Boolean to enable/disable the setup of Automation Hub |
 ## Lab provisioning
 
 The provisioner consists of two playbooks, that configure the underlying components (VM, network) and prepares the guests to install AAP2.
 
-The first playbook is **provision-lab.yml** which takes care of creating KVM resources. It only has a single variable: 
+The first playbook is **provision-lab.yml** which takes care of creating KVM resources. It only has a single variable:
 
 | Variable | Value |
 |--|--|
@@ -57,23 +58,21 @@ The package comes with an inventory:
 
 The playbook can either download RHEL 9 image, or work with pre-downloaded images. If you choose not to download it, the only requirement is providing the image in the playbook directory with the name **rhel.iso**.
 
-**IMPORTANT** If you don't want to download images (it's around 20GB), just leave the **offline_token** blank.
+**IMPORTANT** If you don't want to download images (it's around 20GB), just leave the **offline_token** variable blank.
 
 Since some modules rely on additional collections you will need to install them via:
 
     ansible-galaxy install -r requirements.yml
 
-Review settings in **provision-lab.yml** file, containing some basic inputs:
-
-    network_cidr = ["192.168.216.0/24"]
-
 The terraform plan also creates an isolated virtual network, with DHCP and DNS for the specified domain.
 
-Once you set the *network_cidr* variable to the desired value, you can run the playbook:
+The playbook uses a role that takes care of installing *Automation Controller* and *Automation Hub* for you. The components can be enabled or disabled using the vars in the **lab_values.yml** file.
+
+Once you set the *network_cidr* variable to the desired value in **lab_values.yml**, you can run the playbook:
 
     ansible-playbook -i inventory provision-lab.yml
 
-The setup will take a bit as it is a full install with a kickstarter. 
+The setup will take a bit as it is a full install with a kickstarter.
 
 ## AAP2 setup
 
