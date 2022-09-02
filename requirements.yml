@@ -1,9 +1,12 @@
 ---
 collections:
-- community.general
-- ansible.posix
+  - community.general
+  - ansible.posix
 roles:
-- name: package-downloader
-  src: https://github.com/kubealex/role-package-downloader
-- name: host-provisioner
-  src: https://github.com/kubealex/role-host-provisioner
+  - name: package-downloader
+    src: https://github.com/kubealex/role-package-downloader
+  - name: host-provisioner
+    src: https://github.com/kubealex/role-host-provisioner
+  - name: aap2-setup
+    src: https://github.com/kubealex/role-aap2-setup
+
