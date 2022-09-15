@@ -5,3 +5,4 @@ controller.aapdemo.labs ansible_user=sysadmin ansible_ssh_pass=redhat ansible_ss
 
 [hub]
 hub.aapdemo.labs ansible_user=sysadmin ansible_ssh_pass=redhat ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
