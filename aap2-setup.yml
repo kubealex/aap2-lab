@@ -25,3 +25,4 @@
       vars:
         aap2_setup_controller: "{{ setup_controller | default(true) }}"
         aap2_setup_hub: "{{ setup_hub | default(true) }}"
+        aap2_setup_servicecatalog: "{{ setup_servicecatalog | default(true) }}"
