@@ -12,7 +12,7 @@
         rh_api_offline_token: "{{ offline_token }}"
 
 - name: Configure and install AAP on nodes
-  hosts: controller,hub
+  hosts: controller,hub,servicecatalog
   become: true
   vars_files:
     - lab_vars.yml

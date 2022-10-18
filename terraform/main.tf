@@ -58,5 +58,15 @@ module "servicecatalog_instance" {
   disk_size = var.disk_size
 }
 
+module "sso_instance" {
+  source = "./modules/04_sso_instance"
+  depends_on = [module.libvirt_resources]
+
+# Variables
+  domain = var.domain
+  libvirt_network = var.libvirt_network
+  libvirt_pool = var.libvirt_pool
+  disk_size = var.disk_size
+}
 
 
