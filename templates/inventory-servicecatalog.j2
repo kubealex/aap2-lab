@@ -1,0 +1,52 @@
+[automationcontroller]
+controller.rh-lab-labs
+
+[automationhub]
+
+[automationcatalog]
+{{ inventory_hostname }}
+
+# Single Sign-On
+
+[sso]
+sso.rh-lab-labs
+
+[all:vars]
+admin_password='redhat'
+
+pg_host=''
+pg_port=''
+
+pg_database='awx'
+pg_username='awx'
+pg_password='redhat'
+
+registry_url='registry.redhat.io'
+registry_username='{{ rhsm_user }}'
+registry_password='{{ rhsm_password }}'
+
+# Receptor Configuration
+#
+receptor_listener_port=27199
+
+# Automation Services Catalog Configuration
+#
+
+automationcatalog_pg_host=''
+automationcatalog_pg_port=''
+
+automationcatalog_pg_database='automationservicescatalog'
+automationcatalog_pg_username='automationservicescatalog'
+automationcatalog_pg_password='redhat
+
+# The default install will deploy SSO with sso_use_https=True
+# Keystore password is required for https enabled SSO
+sso_keystore_password='redhat'
+
+# Single-Sign-On configuration
+sso_console_admin_username='admin'
+sso_console_admin_password='redhat'
+
+# The default install will register node to the Red Hat Insights Service
+# if the node is registered with Subscription Manager. Set to False to disable.
+enable_insights_collection = False

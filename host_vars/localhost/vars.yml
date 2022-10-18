@@ -5,7 +5,10 @@ modules:
   - module: 02_hub_instance
     instance: automation-hub
     hostname: hub
+  - module: 03_sc_instance
+    instance: servicecatalog
+    hostname: servicecatalog
 domain: aapdemo.labs
 checksum:
-  aap2: 39c5f84421585fe0171fc0532d3507d195fc32bf5b74e53bfd4e9bcca7a0fcd0
+  aap2: e2260b720579476df130d9a735185e2e068cdc216130cbd4bac8ab4a7c40b910
   rhel9: c6942e3ed65947ed48c30589d9c1a752e96c5b94ee8de1923331449fee162cc1

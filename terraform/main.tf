@@ -25,7 +25,7 @@ module "libvirt_resources" {
   libvirt_pool = var.libvirt_pool
 }
 
-module "conroller_instance" { 
+module "conroller_instance" {
   source = "./modules/01_controller_instance"
   depends_on = [module.libvirt_resources]
 
@@ -36,15 +36,27 @@ module "conroller_instance" {
   disk_size = var.disk_size
 }
 
-module "hub_instance" { 
+module "hub_instance" {
   source = "./modules/02_hub_instance"
   depends_on = [module.libvirt_resources]
-  
+
 # Variables
   domain = var.domain
   libvirt_network = var.libvirt_network
   libvirt_pool = var.libvirt_pool
   disk_size = var.disk_size
 }
+
+module "servicecatalog_instance" {
+  source = "./modules/03_sc_instance"
+  depends_on = [module.libvirt_resources]
+
+# Variables
+  domain = var.domain
+  libvirt_network = var.libvirt_network
+  libvirt_pool = var.libvirt_pool
+  disk_size = var.disk_size
+}
+
 
 
