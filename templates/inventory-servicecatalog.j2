@@ -1,15 +1,15 @@
 [automationcontroller]
-controller.rh-lab-labs
+controller.aapdemo.labs ansible_user=sysadmin ansible_ssh_pass=redhat ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 
 [automationhub]
 
 [automationcatalog]
-{{ inventory_hostname }}
+{{ inventory_hostname }} ansible_connection=local
 
 # Single Sign-On
 
 [sso]
-sso.rh-lab-labs
+sso.aapdemo.labs ansible_user=sysadmin ansible_ssh_pass=redhat ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 
 [all:vars]
 admin_password='redhat'
