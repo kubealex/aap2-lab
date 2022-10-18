@@ -35,7 +35,7 @@
       become: false
 
 - name: Check connection to servers
-  hosts: controller,hub
+  hosts: controller,hub,servicecatalog,sso
   gather_facts: false
   tasks:
     - name: Waiting for installation to end, it can take time!
