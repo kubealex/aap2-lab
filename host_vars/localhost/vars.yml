@@ -2,16 +2,21 @@ modules:
   - module: 01_controller_instance
     instance: controller
     hostname: controller
+    version: rhel9
   - module: 02_hub_instance
     instance: automation-hub
     hostname: hub
+    version: rhel9
   - module: 03_sc_instance
     instance: servicecatalog
     hostname: servicecatalog
+    version: rhel9
   - module: 04_sso_instance
     instance: sso
     hostname: sso
+    version: rhel8
 domain: aapdemo.labs
 checksum:
   aap2: e2260b720579476df130d9a735185e2e068cdc216130cbd4bac8ab4a7c40b910
   rhel9: c6942e3ed65947ed48c30589d9c1a752e96c5b94ee8de1923331449fee162cc1
+  rhel8: 8cb0dfacc94b789933253d5583a2fb7afce26d38d75be7c204975fe20b7bdf71
