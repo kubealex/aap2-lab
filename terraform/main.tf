@@ -28,6 +28,7 @@ module "libvirt_resources" {
 module "conroller_instance" {
   source = "./modules/01_controller_instance"
   depends_on = [module.libvirt_resources]
+  count = tobool(lower(var.controller_setup)) ? 1 : 0
 
 # Variables
   domain = var.domain
@@ -39,6 +40,7 @@ module "conroller_instance" {
 module "hub_instance" {
   source = "./modules/02_hub_instance"
   depends_on = [module.libvirt_resources]
+  count = tobool(lower(var.hub_setup)) ? 1 : 0
 
 # Variables
   domain = var.domain
@@ -50,6 +52,7 @@ module "hub_instance" {
 module "servicecatalog_instance" {
   source = "./modules/03_sc_instance"
   depends_on = [module.libvirt_resources]
+  count = tobool(lower(var.servicecatalog_setup)) ? 1 : 0
 
 # Variables
   domain = var.domain
@@ -57,10 +60,10 @@ module "servicecatalog_instance" {
   libvirt_pool = var.libvirt_pool
   disk_size = var.disk_size
 }
-
 module "sso_instance" {
   source = "./modules/04_sso_instance"
   depends_on = [module.libvirt_resources]
+  count = tobool(lower(var.servicecatalog_setup)) ? 1 : 0
 
 # Variables
   domain = var.domain

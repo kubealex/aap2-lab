@@ -33,3 +33,21 @@ variable libvirt_pool_path {
   description = "Path for libvirt pool definition"
   default     = "/var/lib/libvirt/images"
 }
+
+variable controller_setup {
+  type        = boolean
+  description = "Flag to enable Automation Controller resource"
+  default     = false
+}
+
+variable hub_setup {
+  type        = bool
+  description = "Flag to enable Automation Hub resource"
+  default     = false
+}
+
+variable servicecatalog_setup {
+  type        = bool
+  description = "Flag to enable Services catalog resource"
+  default     = false
+}

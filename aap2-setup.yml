@@ -12,7 +12,7 @@
         rh_api_offline_token: "{{ offline_token }}"
 
 - name: Configure and install AAP on nodes
-  hosts: controller,hub,servicecatalog
+  hosts: controller,hub,servicecatalog,sso
   become: true
   vars_files:
     - lab_vars.yml
@@ -25,4 +25,4 @@
       vars:
         aap2_setup_controller: "{{ setup_controller | default(true) }}"
         aap2_setup_hub: "{{ setup_hub | default(true) }}"
-        aap2_setup_servicecatalog: "{{ setup_servicecatalog | default(true) }}"
+        aap2_setup_servicecatalog: "{{ setup_servicecatalog | default(false) }}"

@@ -1,33 +1,17 @@
-[automationcontroller]
-controller.aapdemo.labs ansible_user=sysadmin ansible_ssh_pass=redhat ansible_ssh_common_args='-o StrictHostKeyChecking=no'
-
-[automationhub]
-
 [automationcatalog]
 {{ inventory_hostname }} ansible_connection=local
 
 # Single Sign-On
 
 [sso]
-sso.aapdemo.labs ansible_user=sysadmin ansible_ssh_pass=redhat ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+{{ hostvars[groups['sso'][0]].ansible_fqdn }} ansible_user=sysadmin ansible_ssh_pass=redhat ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 
 [all:vars]
 admin_password='redhat'
 
-pg_host=''
-pg_port=''
-
-pg_database='awx'
-pg_username='awx'
-pg_password='redhat'
-
 registry_url='registry.redhat.io'
 registry_username='{{ rhsm_user }}'
 registry_password='{{ rhsm_password }}'
-
-# Receptor Configuration
-#
-receptor_listener_port=27199
 
 # Automation Services Catalog Configuration
 #
@@ -37,7 +21,11 @@ automationcatalog_pg_port=''
 
 automationcatalog_pg_database='automationservicescatalog'
 automationcatalog_pg_username='automationservicescatalog'
-automationcatalog_pg_password='redhat
+automationcatalog_pg_password='redhat'
+
+automation_controller_main_url={{ hostvars[groups['controller'][0]].inventory_hostname }}
+automation_controller_username='admin'
+automation_controller_password='redhat'
 
 # The default install will deploy SSO with sso_use_https=True
 # Keystore password is required for https enabled SSO

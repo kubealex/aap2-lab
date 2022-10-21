@@ -36,6 +36,7 @@ In order to work, the playbooks need some basic variables in the **lab_vars.yml*
 | **rhsm_pool_id** | No default | The pool ID of the subscription covering the product [in subscription manager](https://access.redhat.com/management/subscriptions/) |
 | **setup_controller** | Defaults to *true* | Boolean to enable/disable the setup of Automation Controller |
 | **setup_hub** | Defaults to *true* | Boolean to enable/disable the setup of Automation Hub |
+| **setup_servicecatalog** | Defaults to *false* | Boolean to enable/disable the setup of Automation Services Catalog !!!! EXPERIMENTAL |
 ## Lab provisioning
 
 The provisioner consists of two playbooks, that configure the underlying components (VM, network) and prepares the guests to install AAP2.

@@ -3,3 +3,7 @@ rhsm_pool_id:
 rhsm_user:
 rhsm_password:
 network_cidr: 192.168.216.0/24
+
+setup_controller: true
+setup_hub: true
+setup_servicecatalog: false
