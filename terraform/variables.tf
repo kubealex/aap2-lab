@@ -35,19 +35,19 @@ variable libvirt_pool_path {
 }
 
 variable controller_setup {
-  type        = bool
+  type        = string
   description = "Flag to enable Automation Controller resource"
   default     = false
 }
 
 variable hub_setup {
-  type        = bool
+  type        = string
   description = "Flag to enable Automation Hub resource"
   default     = false
 }
 
 variable servicecatalog_setup {
-  type        = bool
+  type        = string
   description = "Flag to enable Services catalog resource"
   default     = false
 }
