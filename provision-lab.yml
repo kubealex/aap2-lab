@@ -32,7 +32,7 @@
         host_modules: "{{ modules }}"
         host_domain: "{{ domain }}"
         tf_vars:
-          network_cidr: ' ["{{ host_network_cidr }}"]'
+          network_cidr: ' ["{{ network_cidr }}"]'
           controller_setup: false
           hub_setup: false
           servicecatalog_setup: false
