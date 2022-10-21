@@ -35,7 +35,7 @@ variable libvirt_pool_path {
 }
 
 variable controller_setup {
-  type        = boolean
+  type        = bool
   description = "Flag to enable Automation Controller resource"
   default     = false
 }
